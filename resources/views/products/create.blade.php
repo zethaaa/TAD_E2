@@ -1,0 +1,59 @@
+@extends('layouts.app')
+
+@section('content')
+<h2 class="mb-4">Nuevo producto</h2>
+
+<form action="{{ route('products.store') }}" method="POST">
+    @csrf
+
+    @error('name')<div class="alert alert-danger">{{ $message }}</div>@enderror
+    @error('price')<div class="alert alert-danger">{{ $message }}</div>@enderror
+    @error('stock')<div class="alert alert-danger">{{ $message }}</div>@enderror
+    @error('sku')<div class="alert alert-danger">{{ $message }}</div>@enderror
+    @error('category_id')<div class="alert alert-danger">{{ $message }}</div>@enderror
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <label class="form-label">Precio (€)</label>
+            <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}">
+        </div>
+        <div class="col mb-3">
+            <label class="form-label">Stock</label>
+            <input type="number" name="stock" class="form-control" value="{{ old('stock') }}">
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">SKU</label>
+        <input type="text" name="sku" class="form-control" value="{{ old('sku') }}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Categoría</label>
+        <select name="category_id" class="form-select">
+            <option value="">Selecciona una categoría</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Activo</label>
+        <select name="active" class="form-select">
+            <option value="1">Sí</option>
+            <option value="0">No</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-danger">Guardar producto</button>
+    <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+@endsection

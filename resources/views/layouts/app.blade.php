@@ -1,37 +1,74 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BermellonShop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'BermellonShop') }}</title>
     @vite(['resources/js/app.js', 'resources/css/app.scss'])
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #e62e1b;">
-        <div class="container">
-            <a class="navbar-brand text-white fw-bold" href="/">BermellonShop</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('products.index') }}">Productos</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div id="app">
+        <nav class="navbar navbar-expand-md shadow-sm" style="background-color: #C0392B;">
+            <div class="container">
+                <a class="navbar-brand text-white fw-bold" href="{{ url('/') }}">
+                    BermellonShop
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-    <div class="container mt-4">
-        @if(session('mensaje'))
-            <div class="alert alert-success alert-dismissible fade show">
-                {{ session('mensaje') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('products.index') }}">Productos</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @guest
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
+                            </li>
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{{ route('register') }}">Registro</a>
+                                </li>
+                            @endif
+                        @else
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                    {{ Auth::user()->name }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#">Mi perfil</a></li>
+                                    <li><a class="dropdown-item" href="#">Mis pedidos</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            Cerrar sesión
+                                        </a>
+                                    </li>
+                                </ul>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
             </div>
-        @endif
+        </nav>
 
-        @yield('content')
+        <main class="container pt-4">
+            @if(session('mensaje'))
+                <div class="alert alert-success alert-dismissible fade show">
+                    {{ session('mensaje') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            @yield('content')
+        </main>
     </div>
 </body>
 </html>

@@ -17,6 +17,10 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                @if(auth()->check() && auth()->user()->role_id === 1)
+
+                <a class="nav-link text-white" href="{{ route('categories.index') }}">Categorías</a>
+                @endif
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto">

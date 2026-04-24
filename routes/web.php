@@ -1,22 +1,46 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Models\Product;
+use App\Models\Category;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    $categories = Category::all();
+    $products = Product::latest()->take(6)->get();
+    return view('welcome', compact('categories', 'products'));
+})->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
-Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
+// Auth
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
+// Productos públicos
+Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
+Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
+Route::get('/products/{id}', [ProductsController::class, 'show'])->name('products.show');
+
+// Solo admin
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/products/create', [ProductsController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
     Route::get('/products/{id}/edit', [ProductsController::class, 'edit'])->name('products.edit');
     Route::put('/products/{id}', [ProductsController::class, 'update'])->name('products.update');
     Route::delete('/products/{id}', [ProductsController::class, 'destroy'])->name('products.destroy');
+
+    Route::get('/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoriesController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{id}/edit', [CategoriesController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{id}', [CategoriesController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{id}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
 });

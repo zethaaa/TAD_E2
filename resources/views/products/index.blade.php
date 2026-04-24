@@ -8,12 +8,29 @@
     @endif
 </div>
 
+<form method="GET" action="{{ route('products.index') }}" class="mb-4">
+    <div class="d-flex gap-2 align-items-center">
+        <select name="category_id" class="form-select w-auto">
+            <option value="">Todas las categorías</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn btn-danger">Filtrar</button>
+        @if(request('category_id'))
+            <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">Limpiar</a>
+        @endif
+    </div>
+</form>
+
 @if(session('error'))
     <div class="alert alert-danger">{{ session('error') }}</div>
 @endif
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach($products as $product)
+    @forelse($products as $product)
     <div class="col">
         <div class="card h-100 shadow-sm">
             @if($product->image)
@@ -25,7 +42,9 @@
             @endif
 
             <div class="card-body">
-                <h5 class="card-title">{{ $product->name }}</h5>
+                <a href="{{ route('products.show', $product->id) }}" class="text-decoration-none text-dark">
+    <h5 class="card-title">{{ $product->name }}</h5>
+</a>
                 <p class="card-text text-muted small">{{ Str::limit($product->description, 80) }}</p>
                 <span class="badge mb-2" style="background-color: #C0392B;">
                     {{ $product->category->name ?? 'Sin categoría' }}
@@ -59,7 +78,11 @@
             </div>
         </div>
     </div>
-    @endforeach
+    @empty
+        <div class="col-12">
+            <p class="text-muted">No hay productos en esta categoría.</p>
+        </div>
+    @endforelse
 </div>
 
 <div class="mt-4">

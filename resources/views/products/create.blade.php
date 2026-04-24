@@ -3,7 +3,7 @@
 @section('content')
 <h2 class="mb-4">Nuevo producto</h2>
 
-<form action="{{ route('products.store') }}" method="POST">
+<form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     @error('name')<div class="alert alert-danger">{{ $message }}</div>@enderror
@@ -11,6 +11,7 @@
     @error('stock')<div class="alert alert-danger">{{ $message }}</div>@enderror
     @error('sku')<div class="alert alert-danger">{{ $message }}</div>@enderror
     @error('category_id')<div class="alert alert-danger">{{ $message }}</div>@enderror
+    @error('image')<div class="alert alert-danger">{{ $message }}</div>@enderror
 
     <div class="mb-3">
         <label class="form-label">Nombre</label>
@@ -44,6 +45,11 @@
                 </option>
             @endforeach
         </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Imagen</label>
+        <input type="file" name="image" class="form-control" accept="image/*">
+        <div class="form-text">Máximo 2MB. Formatos: jpg, png, webp.</div>
     </div>
     <div class="mb-3">
         <label class="form-label">Activo</label>

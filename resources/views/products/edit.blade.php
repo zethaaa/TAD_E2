@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<h2 class="mb-4">Editar producto — {{ $product->name }}</h2>
+<h2 class="mb-4">Editar producto</h2>
 
-<form action="{{ route('products.update', $product->id) }}" method="POST">
+<form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -12,6 +12,7 @@
     @error('stock')<div class="alert alert-danger">{{ $message }}</div>@enderror
     @error('sku')<div class="alert alert-danger">{{ $message }}</div>@enderror
     @error('category_id')<div class="alert alert-danger">{{ $message }}</div>@enderror
+    @error('image')<div class="alert alert-danger">{{ $message }}</div>@enderror
 
     <div class="mb-3">
         <label class="form-label">Nombre</label>
@@ -40,12 +41,22 @@
         <select name="category_id" class="form-select">
             <option value="">Selecciona una categoría</option>
             @foreach($categories as $category)
-                <option value="{{ $category->id }}"
-                    {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                     {{ $category->name }}
                 </option>
             @endforeach
         </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Imagen</label>
+        @if($product->image)
+            <div class="mb-2">
+                <img src="{{ asset('storage/' . $product->image) }}" style="height: 120px; object-fit: cover; border-radius: 8px;">
+                <div class="form-text">Imagen actual. Sube una nueva para reemplazarla.</div>
+            </div>
+        @endif
+        <input type="file" name="image" class="form-control" accept="image/*">
+        <div class="form-text">Máximo 2MB. Formatos: jpg, png, webp.</div>
     </div>
     <div class="mb-3">
         <label class="form-label">Activo</label>

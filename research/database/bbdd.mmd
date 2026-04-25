@@ -1,0 +1,128 @@
+erDiagram
+	direction TB
+	ROLE {
+		int roleId PK ""  
+		string roleName  ""  
+		string description  ""  
+	}
+
+	ADDRESS {
+		int addressId PK ""  
+		int userId FK ""  
+		string street  ""  
+		string city  ""  
+		string state  ""  
+		string postalCode  ""  
+		string country  ""  
+		boolean isDefault  ""  
+	}
+
+	SHOPPING_CART {
+		int cartId PK ""  
+		int userId FK ""  
+		datetime createdAt  ""  
+		datetime updatedAt  ""  
+	}
+
+	FAVORITE_LIST {
+		int favoriteId PK ""  
+		int userId FK ""  
+		int productId FK ""  
+		datetime addedAt  ""  
+	}
+
+	ORDER_ITEM {
+		int orderItemId PK ""  
+		int orderId FK ""  
+		int productId FK ""  
+		int quantity  ""  
+		decimal unitPrice  ""  
+		decimal subtotal  ""  
+	}
+
+	INVOICE {
+		int invoiceId PK ""  
+		int paymentId FK ""  
+		string invoiceNumber UK ""  
+		decimal subtotal  ""  
+		decimal tax  ""  
+		decimal totalAmount  ""  
+		string status  ""  
+		datetime issueDate  ""  
+		datetime dueDate  ""  
+	}
+
+	CATEGORY {
+		int categoryId PK ""  
+		string name  ""  
+		string slug  ""  
+		text description  ""  
+	}
+
+	USER {
+		int userId PK ""  
+		int roleId FK ""  
+		string firstName  ""  
+		string lastName  ""  
+		string email UK ""  
+		string passwordHash  ""  
+		string phone  ""  
+	}
+
+	PRODUCT {
+		int productId PK ""  
+		int categoryId FK ""  
+		string name  ""  
+		text description  ""  
+		decimal price  ""  
+		int stock  ""  
+		string sku  ""  
+	}
+
+	PAYMENT {
+		int paymentId PK ""  
+		int orderId FK ""  
+		int userId FK ""  
+		int addressId FK ""  
+		decimal amount  ""  
+		string paymentMethod  ""  
+		string transactionId  ""  
+		string status  ""  
+		datetime paymentDate  ""  
+	}
+
+	CART_ITEM {
+		int cartItemId PK ""  
+		int cartId FK ""  
+		int productId FK ""  
+		int quantity  ""  
+	}
+
+	ORDER {
+		int orderId PK ""  
+		int userId FK ""  
+		int addressId FK ""  
+		string orderNumber UK ""  
+		string delivery_address  ""  
+		string invoice_address ""  
+		decimal totalAmount  ""  
+		string status  ""  
+		datetime orderDate  ""  
+		datetime deliveryDate  ""  
+	}
+
+	ROLE||--o{USER:"n:m"
+	USER||--o{ORDER:"1:n"
+	USER||--o{ADDRESS:"1:n"
+	USER||--o{SHOPPING_CART:"1:1"
+	USER||--o{FAVORITE_LIST:"1:1"
+	FAVORITE_LIST}o--||PRODUCT:"n:m"
+	SHOPPING_CART||--|{CART_ITEM:"1:n"
+	CART_ITEM}o--||PRODUCT:"n:m"
+	ORDER||--o{ORDER_ITEM:"1:n"
+	ORDER_ITEM}o--||PRODUCT:"n:1"
+	ORDER||--||PAYMENT:"1:1"
+	PAYMENT||--||INVOICE:"1:1"
+	CATEGORY||--o{PRODUCT:"n:m"
+	USER||--o{PAYMENT:"1:n"
+	ADDRESS||--o{PAYMENT:"1:n"

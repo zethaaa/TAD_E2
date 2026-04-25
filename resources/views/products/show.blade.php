@@ -49,9 +49,30 @@
         </div>
 
         @if($product->stock > 0)
-            <button class="btn btn-lg w-100 text-white mb-3" style="background-color:#C0392B;">
-                🛒 Añadir al carrito
-            </button>
+            @auth
+                <form action="{{ route('cart.items.store', $product->id) }}" method="POST" class="mb-3">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Cantidad</label>
+                        <input
+                            id="quantity"
+                            type="number"
+                            name="quantity"
+                            class="form-control"
+                            min="1"
+                            max="{{ $product->stock }}"
+                            value="{{ old('quantity', 1) }}"
+                        >
+                    </div>
+                    <button class="btn btn-lg w-100 text-white" style="background-color:#C0392B;" type="submit">
+                        Añadir al carrito
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-lg w-100 text-white mb-3" style="background-color:#C0392B;">
+                    Inicia sesion para comprar
+                </a>
+            @endauth
         @else
             <button class="btn btn-lg w-100 btn-secondary mb-3" disabled>Sin stock</button>
         @endif

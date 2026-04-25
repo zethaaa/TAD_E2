@@ -27,6 +27,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('products.index') }}">Productos</a>
                         </li>
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('cart.index') }}">
+                                    Carrito ({{ auth()->user()->cartItems()->sum('quantity') }})
+                                </a>
+                            </li>
+                        @endauth
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         @guest

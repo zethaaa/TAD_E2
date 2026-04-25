@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Auth\LoginController;
@@ -28,19 +29,47 @@ Route::post('/register', [RegisterController::class, 'register']);
 // Productos públicos
 Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
 Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
-Route::get('/products/{id}', [ProductsController::class, 'show'])->name('products.show');
+Route::get('/products/{id}', [ProductsController::class, 'show'])
+    ->whereNumber('id')
+    ->name('products.show');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/items/{product}', [CartController::class, 'store'])
+        ->whereNumber('product')
+        ->name('cart.items.store');
+    Route::put('/cart/items/{cartItem}', [CartController::class, 'update'])
+        ->whereNumber('cartItem')
+        ->name('cart.items.update');
+    Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])
+        ->whereNumber('cartItem')
+        ->name('cart.items.destroy');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+});
 
 // Solo admin
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/products/create', [ProductsController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
-    Route::get('/products/{id}/edit', [ProductsController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{id}', [ProductsController::class, 'update'])->name('products.update');
-    Route::delete('/products/{id}', [ProductsController::class, 'destroy'])->name('products.destroy');
+    Route::get('/products/{id}/edit', [ProductsController::class, 'edit'])
+        ->whereNumber('id')
+        ->name('products.edit');
+    Route::put('/products/{id}', [ProductsController::class, 'update'])
+        ->whereNumber('id')
+        ->name('products.update');
+    Route::delete('/products/{id}', [ProductsController::class, 'destroy'])
+        ->whereNumber('id')
+        ->name('products.destroy');
 
     Route::get('/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
     Route::post('/categories', [CategoriesController::class, 'store'])->name('categories.store');
-    Route::get('/categories/{id}/edit', [CategoriesController::class, 'edit'])->name('categories.edit');
-    Route::put('/categories/{id}', [CategoriesController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{id}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/categories/{id}/edit', [CategoriesController::class, 'edit'])
+        ->whereNumber('id')
+        ->name('categories.edit');
+    Route::put('/categories/{id}', [CategoriesController::class, 'update'])
+        ->whereNumber('id')
+        ->name('categories.update');
+    Route::delete('/categories/{id}', [CategoriesController::class, 'destroy'])
+        ->whereNumber('id')
+        ->name('categories.destroy');
 });

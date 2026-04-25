@@ -8,18 +8,22 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
+        $admin = User::create([
             'role_id' => 1,
             'name' => 'Admin Bermellón',
             'email' => 'admin@bermellonshop.com',
             'password' => Hash::make('admin1234'),
         ]);
 
-        User::create([
+        $admin->roles()->syncWithoutDetaching([1]);
+
+        $customer = User::create([
             'role_id' => 2,
             'name' => 'Cliente Demo',
             'email' => 'cliente@bermellonshop.com',
             'password' => Hash::make('cliente1234'),
         ]);
+
+        $customer->roles()->syncWithoutDetaching([2]);
     }
 }

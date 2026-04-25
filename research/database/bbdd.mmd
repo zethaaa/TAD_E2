@@ -17,13 +17,6 @@ erDiagram
 		boolean isDefault  ""  
 	}
 
-	SHOPPING_CART {
-		int cartId PK ""  
-		int userId FK ""  
-		datetime createdAt  ""  
-		datetime updatedAt  ""  
-	}
-
 	FAVORITE_LIST {
 		int favoriteId PK ""  
 		int userId FK ""  
@@ -93,7 +86,7 @@ erDiagram
 
 	CART_ITEM {
 		int cartItemId PK ""  
-		int cartId FK ""  
+		int userId FK ""  
 		int productId FK ""  
 		int quantity  ""  
 	}
@@ -111,18 +104,17 @@ erDiagram
 		datetime deliveryDate  ""  
 	}
 
-	ROLE||--o{USER:"n:m"
+	ROLE}o--o{USER:"n:m"
 	USER||--o{ORDER:"1:n"
 	USER||--o{ADDRESS:"1:n"
-	USER||--o{SHOPPING_CART:"1:1"
 	USER||--o{FAVORITE_LIST:"1:1"
+	USER||--o{CART_ITEM:"1:n"
 	FAVORITE_LIST}o--||PRODUCT:"n:m"
-	SHOPPING_CART||--|{CART_ITEM:"1:n"
 	CART_ITEM}o--||PRODUCT:"n:m"
 	ORDER||--o{ORDER_ITEM:"1:n"
 	ORDER_ITEM}o--||PRODUCT:"n:1"
 	ORDER||--||PAYMENT:"1:1"
 	PAYMENT||--||INVOICE:"1:1"
-	CATEGORY||--o{PRODUCT:"n:m"
+	CATEGORY}o--o{PRODUCT:"n:m"
 	USER||--o{PAYMENT:"1:n"
 	ADDRESS||--o{PAYMENT:"1:n"

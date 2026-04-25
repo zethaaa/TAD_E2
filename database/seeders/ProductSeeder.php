@@ -2,11 +2,14 @@
 namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\Category;
 
 class ProductSeeder extends Seeder
 {
     public function run(): void
     {
+        $fallbackCategory = Category::first();
+
         $products = [
             [
                 'name' => 'Cuadro Bermellón Nº1',
@@ -51,7 +54,11 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::create($product);
+            $createdProduct = Product::create($product);
+
+            if ($fallbackCategory) {
+                $createdProduct->categories()->syncWithoutDetaching([$fallbackCategory->id]);
+            }
         }
     }
 }

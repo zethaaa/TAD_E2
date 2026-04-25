@@ -10,10 +10,16 @@ class ProductsController extends Controller
     public function index(Request $request)
     {
         $categories = Category::all();
-        $query = Product::query();
+        $query = Product::with(['category', 'categories']);
 
         if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $categoryId = $request->category_id;
+            $query->where(function ($subQuery) use ($categoryId) {
+                $subQuery->where('category_id', $categoryId)
+                    ->orWhereHas('categories', function ($categoryQuery) use ($categoryId) {
+                        $categoryQuery->where('categories.id', $categoryId);
+                    });
+            });
         }
 
         $products = $query->paginate(10)->withQueryString();
@@ -43,7 +49,8 @@ class ProductsController extends Controller
             $data['image'] = $request->file('image')->store('products', 'public');
         }
 
-        Product::create($data);
+        $product = Product::create($data);
+        $product->categories()->sync([$data['category_id']]);
 
         return redirect()->route('products.index')
             ->with('mensaje', 'Producto creado correctamente');
@@ -75,6 +82,7 @@ class ProductsController extends Controller
         }
 
         $product->update($data);
+        $product->categories()->sync([$data['category_id']]);
 
         return redirect()->route('products.index')
             ->with('mensaje', 'Producto actualizado correctamente');

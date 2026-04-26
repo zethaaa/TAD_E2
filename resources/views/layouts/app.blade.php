@@ -27,6 +27,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('products.index') }}">Productos</a>
                         </li>
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('cart.index') }}">
+                                    Carrito ({{ auth()->user()->cartItems()->sum('quantity') }})
+                                </a>
+                            </li>
+                        @endauth
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         @guest
@@ -44,7 +51,7 @@
                                     {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#">Mi perfil</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('profile.index') }}">Mi perfil</a></li>
                                     <li><a class="dropdown-item" href="#">Mis pedidos</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>

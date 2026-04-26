@@ -1,12 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Product;
 use App\Models\Category;
+use App\Http\Controllers\ProfileController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/info', [ProfileController::class, 'updateInfo'])->name('profile.updateInfo');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    Route::post('/profile/addresses', [ProfileController::class, 'storeAddress'])->name('profile.storeAddress');
+    Route::delete('/profile/addresses/{id}', [ProfileController::class, 'destroyAddress'])->name('profile.destroyAddress');
+    Route::post('/profile/payment-methods', [ProfileController::class, 'storePaymentMethod'])->name('profile.storePaymentMethod');
+    Route::delete('/profile/payment-methods/{id}', [ProfileController::class, 'destroyPaymentMethod'])->name('profile.destroyPaymentMethod');
+});
 
 Route::get('/', function () {
     $categories = Category::all();
@@ -31,6 +43,20 @@ Route::get('/categories', [CategoriesController::class, 'index'])->name('categor
 Route::get('/products/{id}', [ProductsController::class, 'show'])
     ->whereNumber('id')
     ->name('products.show');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/items/{product}', [CartController::class, 'store'])
+        ->whereNumber('product')
+        ->name('cart.items.store');
+    Route::put('/cart/items/{cartItem}', [CartController::class, 'update'])
+        ->whereNumber('cartItem')
+        ->name('cart.items.update');
+    Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])
+        ->whereNumber('cartItem')
+        ->name('cart.items.destroy');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+});
 
 // Solo admin
 Route::middleware(['auth', 'admin'])->group(function () {

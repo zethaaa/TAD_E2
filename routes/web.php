@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Auth\LoginController;
@@ -42,6 +43,20 @@ Route::get('/categories', [CategoriesController::class, 'index'])->name('categor
 Route::get('/products/{id}', [ProductsController::class, 'show'])
     ->whereNumber('id')
     ->name('products.show');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/items/{product}', [CartController::class, 'store'])
+        ->whereNumber('product')
+        ->name('cart.items.store');
+    Route::put('/cart/items/{cartItem}', [CartController::class, 'update'])
+        ->whereNumber('cartItem')
+        ->name('cart.items.update');
+    Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])
+        ->whereNumber('cartItem')
+        ->name('cart.items.destroy');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+});
 
 // Solo admin
 Route::middleware(['auth', 'admin'])->group(function () {

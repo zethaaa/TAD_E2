@@ -68,9 +68,18 @@
                     </div>
                 @else
                     @if($product->stock > 0)
-                        <button class="btn w-100 text-white" style="background-color: #C0392B;">
-                            Añadir al carrito
-                        </button>
+                        @auth
+                            <form action="{{ route('cart.items.store', $product->id) }}" method="POST">
+                                @csrf
+                                <button class="btn w-100 text-white" style="background-color: #C0392B;" type="submit">
+                                    Añadir al carrito
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="btn w-100 text-white" style="background-color: #C0392B;">
+                                Inicia sesion para comprar
+                            </a>
+                        @endauth
                     @else
                         <button class="btn btn-secondary w-100" disabled>Sin stock</button>
                     @endif

@@ -7,6 +7,17 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Product;
 use App\Models\Category;
+use App\Http\Controllers\ProfileController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/info', [ProfileController::class, 'updateInfo'])->name('profile.updateInfo');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    Route::post('/profile/addresses', [ProfileController::class, 'storeAddress'])->name('profile.storeAddress');
+    Route::delete('/profile/addresses/{id}', [ProfileController::class, 'destroyAddress'])->name('profile.destroyAddress');
+    Route::post('/profile/payment-methods', [ProfileController::class, 'storePaymentMethod'])->name('profile.storePaymentMethod');
+    Route::delete('/profile/payment-methods/{id}', [ProfileController::class, 'destroyPaymentMethod'])->name('profile.destroyPaymentMethod');
+});
 
 Route::get('/', function () {
     $categories = Category::all();

@@ -15,20 +15,29 @@
             </div>
         </div>
         <div class="list-group shadow-sm">
-            <a href="#datos" class="list-group-item list-group-item-action active" 
-               style="background-color:#C0392B;border-color:#C0392B;" data-bs-toggle="list">
+            <a href="#datos" class="list-group-item list-group-item-action {{ session('active_tab', 'datos') == 'datos' ? 'active' : '' }}"
+               style="{{ session('active_tab', 'datos') == 'datos' ? 'background-color:#C0392B;border-color:#C0392B;' : '' }}"
+               data-bs-toggle="list">
                 👤 Datos personales
             </a>
-            <a href="#password" class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <a href="#password" class="list-group-item list-group-item-action {{ session('active_tab') == 'password' ? 'active' : '' }}"
+               style="{{ session('active_tab') == 'password' ? 'background-color:#C0392B;border-color:#C0392B;' : '' }}"
+               data-bs-toggle="list">
                 🔑 Cambiar contraseña
             </a>
-            <a href="#direcciones" class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <a href="#direcciones" class="list-group-item list-group-item-action {{ session('active_tab') == 'direcciones' ? 'active' : '' }}"
+               style="{{ session('active_tab') == 'direcciones' ? 'background-color:#C0392B;border-color:#C0392B;' : '' }}"
+               data-bs-toggle="list">
                 📍 Direcciones
             </a>
-            <a href="#pagos" class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <a href="#pagos" class="list-group-item list-group-item-action {{ session('active_tab') == 'pagos' ? 'active' : '' }}"
+               style="{{ session('active_tab') == 'pagos' ? 'background-color:#C0392B;border-color:#C0392B;' : '' }}"
+               data-bs-toggle="list">
                 💳 Métodos de pago
             </a>
-            <a href="#pedidos" class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <a href="#pedidos" class="list-group-item list-group-item-action {{ session('active_tab') == 'pedidos' ? 'active' : '' }}"
+               style="{{ session('active_tab') == 'pedidos' ? 'background-color:#C0392B;border-color:#C0392B;' : '' }}"
+               data-bs-toggle="list">
                 📦 Mis pedidos
             </a>
             <form action="{{ route('logout') }}" method="POST">
@@ -45,7 +54,7 @@
         <div class="tab-content">
 
             {{-- DATOS PERSONALES --}}
-            <div class="tab-pane fade show active" id="datos">
+            <div class="tab-pane fade {{ session('active_tab', 'datos') == 'datos' ? 'show active' : '' }}" id="datos">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-4">Datos personales</h5>
@@ -66,13 +75,16 @@
             </div>
 
             {{-- CONTRASEÑA --}}
-            <div class="tab-pane fade" id="password">
+            <div class="tab-pane fade {{ session('active_tab') == 'password' ? 'show active' : '' }}" id="password">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-4">Cambiar contraseña</h5>
                         <form action="{{ route('profile.updatePassword') }}" method="POST">
                             @csrf
                             @error('current_password')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                            @error('password')
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                             <div class="mb-3">
@@ -94,11 +106,10 @@
             </div>
 
             {{-- DIRECCIONES --}}
-            <div class="tab-pane fade" id="direcciones">
+            <div class="tab-pane fade {{ session('active_tab') == 'direcciones' ? 'show active' : '' }}" id="direcciones">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-4">Mis direcciones</h5>
-
                         @forelse($addresses as $address)
                         <div class="border rounded p-3 mb-3 d-flex justify-content-between align-items-start">
                             <div>
@@ -119,7 +130,6 @@
                         @empty
                             <p class="text-muted">No tienes direcciones guardadas.</p>
                         @endforelse
-
                         <hr>
                         <h6 class="fw-bold mb-3">Añadir dirección</h6>
                         <form action="{{ route('profile.storeAddress') }}" method="POST">
@@ -158,65 +168,20 @@
                 </div>
             </div>
 
-            {{-- MÉTODOS DE PAGO --}}
-            <div class="tab-pane fade" id="pagos">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-4">Métodos de pago</h5>
-
-                        @php $paymentMethods = session('payment_methods', []); @endphp
-
-                        @forelse($paymentMethods as $method)
-                        <div class="border rounded p-3 mb-3 d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ $method['card_type'] }}</strong>
-                                •••• •••• •••• {{ $method['last4'] }}<br>
-                                <small class="text-muted">{{ $method['card_holder'] }} · Caduca {{ $method['expiry'] }}</small>
-                            </div>
-                            <form action="{{ route('profile.destroyPaymentMethod', $method['id']) }}" method="POST">
-                                @method('DELETE')
-                                @csrf
-                                <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                            </form>
-                        </div>
-                        @empty
-                            <p class="text-muted">No tienes métodos de pago guardados.</p>
-                        @endforelse
-
-                        <hr>
-                        <h6 class="fw-bold mb-3">Añadir tarjeta</h6>
-                        <form action="{{ route('profile.storePaymentMethod') }}" method="POST">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="form-label">Titular</label>
-                                <input type="text" name="card_holder" class="form-control" placeholder="Nombre Apellidos">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Número de tarjeta</label>
-                                <input type="text" name="card_number" class="form-control" maxlength="16" placeholder="1234567890123456">
-                            </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label class="form-label">Caducidad</label>
-                                    <input type="text" name="expiry" class="form-control" placeholder="MM/AA">
-                                </div>
-                                <div class="col mb-3">
-                                    <label class="form-label">Tipo</label>
-                                    <select name="card_type" class="form-select">
-                                        <option>Visa</option>
-                                        <option>Mastercard</option>
-                                        <option>American Express</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <button class="btn text-white" style="background-color:#C0392B;">Añadir tarjeta</button>
-                        </form>
-                    </div>
-                </div>
+           {{-- MÉTODOS DE PAGO --}}
+<div class="tab-pane fade {{ session('active_tab') == 'pagos' ? 'show active' : '' }}" id="pagos">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">Métodos de pago</h5>
+            <div class="alert alert-info d-flex align-items-center gap-2">
+                <span>💳</span>
+                <span>La integración con pasarela de pago está pendiente de implementación. Próximamente podrás gestionar tus métodos de pago aquí.</span>
             </div>
-
+        </div>
+    </div>
+</div>
             {{-- PEDIDOS --}}
-            <div class="tab-pane fade" id="pedidos">
+            <div class="tab-pane fade {{ session('active_tab') == 'pedidos' ? 'show active' : '' }}" id="pedidos">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-4">Mis pedidos</h5>

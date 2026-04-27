@@ -80,7 +80,6 @@
         </div>
     </div>
 </div>
-<p>Usuario: {{ auth()->user()->name }} | role_id: {{ auth()->user()->role_id }}</p>
 
 @if(auth()->user()->role_id === 1)
 <div class="card shadow-sm border-0 mt-3">

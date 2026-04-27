@@ -9,6 +9,17 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Product;
 use App\Models\Category;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OrderController;
+
+//resumen pedido
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

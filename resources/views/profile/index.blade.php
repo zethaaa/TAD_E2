@@ -131,31 +131,48 @@
                             <p class="text-muted">No tienes direcciones guardadas.</p>
                         @endforelse
                         <hr>
+                        <hr>
                         <h6 class="fw-bold mb-3">Añadir dirección</h6>
+
+                        @if($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <form action="{{ route('profile.storeAddress') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label">Calle y número</label>
-                                <input type="text" name="street" class="form-control" placeholder="Calle Mayor 1">
+                                <input type="text" name="street" class="form-control" 
+                                placeholder="Calle Mayor 1" value="{{ old('street') }}">
                             </div>
                             <div class="row">
                                 <div class="col mb-3">
                                     <label class="form-label">Ciudad</label>
-                                    <input type="text" name="city" class="form-control">
+                                    <input type="text" name="city" class="form-control" 
+                                    value="{{ old('city') }}">
                                 </div>
                                 <div class="col mb-3">
                                     <label class="form-label">Código postal</label>
-                                    <input type="text" name="postal_code" class="form-control">
+                                    <input type="text" name="postal_code" class="form-control" 
+                                    value="{{ old('postal_code') }}">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col mb-3">
                                     <label class="form-label">Provincia</label>
-                                    <input type="text" name="state" class="form-control">
+                                    <input type="text" name="state" class="form-control" 
+                                    value="{{ old('state') }}">
                                 </div>
                                 <div class="col mb-3">
                                     <label class="form-label">País</label>
-                                    <input type="text" name="country" class="form-control" value="España">
+                                    <input type="text" name="country" class="form-control" 
+                                    value="{{ old('country', 'España') }}">
                                 </div>
                             </div>
                             <div class="form-check mb-3">
@@ -180,15 +197,30 @@
         </div>
     </div>
 </div>
-            {{-- PEDIDOS --}}
-            <div class="tab-pane fade {{ session('active_tab') == 'pedidos' ? 'show active' : '' }}" id="pedidos">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-4">Mis pedidos</h5>
-                        <p class="text-muted">Aquí aparecerán tus pedidos una vez realices una compra.</p>
+          {{-- PEDIDOS --}}
+<div class="tab-pane fade {{ session('active_tab') == 'pedidos' ? 'show active' : '' }}" id="pedidos">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">Mis pedidos</h5>
+            @if($orders->isEmpty())
+                <p class="text-muted">No tienes pedidos todavía.</p>
+            @else
+                @foreach($orders as $order)
+                <div class="border rounded p-3 mb-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ $order->order_number }}</strong><br>
+                        <small class="text-muted">{{ $order->ordered_at->format('d/m/Y') }}</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="fw-bold">{{ number_format($order->total_amount, 2) }} €</span><br>
+                        <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-danger mt-1">Ver detalle</a>
                     </div>
                 </div>
-            </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+</div>
 
         </div>
     </div>

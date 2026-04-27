@@ -55,11 +55,17 @@ php artisan serve
 
 Accede en: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-## Ramas del proyecto
+## Configuración de email (Mailtrap)
 
-| Rama | Descripción |
-|------|-------------|
-| `main` | Versión estable |
-| `develop` | Rama de integración |
-| `feature/autenticacion` | Login, registro y roles y CRUD de productos |
-| `feature/categorias` | CRUD categorías, home, filtrado e imágenes |
+1. Crea cuenta en [mailtrap.io](https://mailtrap.io)
+2. Ve a Email Testing → My Sandbox → SMTP
+3. Copia las credenciales en tu `.env`:
+
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=tu_username
+MAIL_PASSWORD=tu_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@bermellonshop.com
+MAIL_FROM_NAME="BermellonShop"

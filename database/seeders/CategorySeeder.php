@@ -8,11 +8,11 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Pintura', 'slug' => 'pintura', 'description' => 'Pinturas y acrílicos'],
-            ['name' => 'Cerámica', 'slug' => 'ceramica', 'description' => 'Piezas de cerámica artesanal'],
+            ['name' => 'Pintura',     'slug' => 'pintura',     'description' => 'Pinturas y acrílicos'],
+            ['name' => 'Cerámica',    'slug' => 'ceramica',    'description' => 'Piezas de cerámica artesanal'],
             ['name' => 'Ilustración', 'slug' => 'ilustracion', 'description' => 'Ilustraciones y prints'],
-            ['name' => 'Escultura', 'slug' => 'escultura', 'description' => 'Esculturas y figuras'],
-            ['name' => 'Fotografía', 'slug' => 'fotografia', 'description' => 'Fotografía artística'],
+            ['name' => 'Escultura',   'slug' => 'escultura',   'description' => 'Esculturas y figuras'],
+            ['name' => 'Fotografía',  'slug' => 'fotografia',  'description' => 'Fotografía artística'],
         ];
 
         foreach ($categories as $category) {

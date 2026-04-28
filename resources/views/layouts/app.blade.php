@@ -61,10 +61,14 @@
                                     {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="{{ route('profile.index') }}">Mi perfil</a></li>
-                                    <li><a class="dropdown-item" href="#">Mis pedidos</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
+                                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">Mi perfil</a></li>
+                                        @if(auth()->check() && auth()->user()->role_id === 1)
+                                            <li><a class="dropdown-item" href="{{ route('admin.orders') }}">Pedidos de usuarios</a></li>
+                                        @else
+                                            <li><a class="dropdown-item" href="{{ route('orders.index') }}">Mis pedidos</a></li>
+                                        @endif
+                                        <li><hr class="dropdown-divider"></li>
+
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             Cerrar sesión

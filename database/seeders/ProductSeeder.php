@@ -8,57 +8,62 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $fallbackCategory = Category::first();
+        $pintura     = Category::where('slug', 'pintura')->first();
+        $ceramica    = Category::where('slug', 'ceramica')->first();
+        $ilustracion = Category::where('slug', 'ilustracion')->first();
+        $escultura   = Category::where('slug', 'escultura')->first();
+        $fotografia  = Category::where('slug', 'fotografia')->first();
 
         $products = [
             [
-                'name' => 'Cuadro Bermellón Nº1',
+                'name'        => 'Cuadro Bermellón Nº1',
                 'description' => 'Pintura al óleo sobre lienzo, tonos bermellón y ocre.',
-                'price' => 120.00,
-                'stock' => 5,
-                'sku' => 'PINT-001',
-                'active' => true,
+                'price'       => 120.00,
+                'stock'       => 5,
+                'sku'         => 'PINT-001',
+                'active'      => true,
+                'category_id' => $pintura?->id,
             ],
             [
-                'name' => 'Jarrón Artesanal Rojo',
+                'name'        => 'Jarrón Artesanal Rojo',
                 'description' => 'Jarrón de cerámica hecho a mano con esmalte rojo.',
-                'price' => 45.00,
-                'stock' => 10,
-                'sku' => 'CER-001',
-                'active' => true,
+                'price'       => 45.00,
+                'stock'       => 10,
+                'sku'         => 'CER-001',
+                'active'      => true,
+                'category_id' => $ceramica?->id,
             ],
             [
-                'name' => 'Print Abstracto Fuego',
+                'name'        => 'Print Abstracto Fuego',
                 'description' => 'Ilustración digital en tonos cálidos, impresión en papel.',
-                'price' => 25.00,
-                'stock' => 20,
-                'sku' => 'ILU-001',
-                'active' => true,
+                'price'       => 25.00,
+                'stock'       => 20,
+                'sku'         => 'ILU-001',
+                'active'      => true,
+                'category_id' => $ilustracion?->id,
             ],
             [
-                'name' => 'Figura Llama Cerámica',
+                'name'        => 'Figura Llama Cerámica',
                 'description' => 'Escultura decorativa de cerámica esmaltada.',
-                'price' => 60.00,
-                'stock' => 8,
-                'sku' => 'ESC-001',
-                'active' => true,
+                'price'       => 60.00,
+                'stock'       => 8,
+                'sku'         => 'ESC-001',
+                'active'      => true,
+                'category_id' => $escultura?->id,
             ],
             [
-                'name' => 'Fotografía Atardecer Sevilla',
+                'name'        => 'Fotografía Atardecer Sevilla',
                 'description' => 'Fotografía artística enmarcada, edición limitada.',
-                'price' => 85.00,
-                'stock' => 3,
-                'sku' => 'FOT-001',
-                'active' => true,
+                'price'       => 85.00,
+                'stock'       => 3,
+                'sku'         => 'FOT-001',
+                'active'      => true,
+                'category_id' => $fotografia?->id,
             ],
         ];
 
         foreach ($products as $product) {
-            $createdProduct = Product::create($product);
-
-            if ($fallbackCategory) {
-                $createdProduct->categories()->syncWithoutDetaching([$fallbackCategory->id]);
-            }
+            Product::create($product);
         }
     }
 }

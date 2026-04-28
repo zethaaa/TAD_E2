@@ -9,6 +9,17 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Product;
 use App\Models\Category;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\FavoriteController;
+//resumen pedido
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -57,6 +68,19 @@ Route::middleware('auth')->group(function () {
         ->name('cart.items.destroy');
     Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 });
+
+//Productos favoritos
+Route::middleware('auth')->group(function () {
+    Route::get('/favoritos', [FavoriteController::class, 'index'])->name('favorites.index');
+    
+    // Esta ruta servirá para añadir o quitar productos de la lista
+    Route::post('/favoritos/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+
+    // Añadir o quitar productos de la lista de favoritos
+    Route::post('/favoritos/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+
+});
+
 
 // Solo admin
 Route::middleware(['auth', 'admin'])->group(function () {

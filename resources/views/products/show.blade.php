@@ -24,13 +24,33 @@
         @endif
     </div>
 
-    {{-- Info --}}
+{{-- Info --}}
     <div class="col-md-6">
         <span class="badge mb-3" style="background-color:#C0392B; font-size: 0.85rem;">
             {{ $product->category->name ?? 'Sin categoría' }}
         </span>
 
-        <h1 class="fw-bold mb-2">{{ $product->name }}</h1>
+        <div class="d-flex align-items-center mb-2">
+            {{-- Botón de Favoritos --}}
+            @auth
+                <form action="{{ route('favorites.toggle', $product->id) }}" method="POST" class="me-2">
+                    @csrf
+                    <button type="submit" class="btn p-0 border-0 bg-transparent" style="font-size: 1.5rem; line-height: 1;">
+                        @if(auth()->user()->favoriteLists()->where('product_id', $product->id)->exists())
+                            <span title="Quitar de favoritos">❤️</span>
+                        @else
+                            <span title="Añadir a favoritos">🤍</span>
+                        @endif
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="text-decoration-none me-2" style="font-size: 1.5rem; line-height: 1;" title="Inicia sesión para añadir a favoritos">
+                    🤍
+                </a>
+            @endauth
+
+            <h1 class="fw-bold m-0">{{ $product->name }}</h1>
+        </div>
 
         <p class="text-muted mb-4">{{ $product->description }}</p>
 

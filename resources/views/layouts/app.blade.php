@@ -34,6 +34,16 @@
                                 </a>
                             </li>
                         @endauth
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('favorites.index') }}">
+                                    Favoritos
+                                    <span class="badge rounded-pill bg-white text-danger">
+                                        {{ auth()->user()->favoriteLists->count() }}
+                                    </span>
+                                </a>
+                            </li>
+                        @endauth
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         @guest

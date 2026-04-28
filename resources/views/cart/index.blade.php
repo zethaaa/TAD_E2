@@ -73,5 +73,14 @@
             </tfoot>
         </table>
     </div>
+
+    <div class="d-flex justify-content-end mt-3">
+    <a href="{{ route('orders.checkout') }}" class="btn btn-lg text-white fw-bold px-5"
+       style="background-color:#C0392B;">
+        Proceder al pago →
+    </a>
+</div>
 @endif
+
+
 @endsection

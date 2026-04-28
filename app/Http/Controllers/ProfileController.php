@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Address;
 use App\Models\UserProfile;
+use App\Models\Order;
 
 class ProfileController extends Controller
 {
@@ -14,8 +15,9 @@ class ProfileController extends Controller
         $user = Auth::user();
         $profile = $user->profile ?? new UserProfile();
         $addresses = Address::where('user_id', $user->id)->get();
-        $orders = [];
-
+        $orders = Order::where('user_id', $user->id)
+            ->latest()
+            ->get();
         return view('profile.index', compact('user', 'profile', 'addresses', 'orders'));
     }
 
@@ -63,39 +65,55 @@ class ProfileController extends Controller
             ->with('active_tab', 'password');
     }
 
-    // Direcciones
-    public function storeAddress(Request $request)
-    {
-        $request->validate([
-            'street'      => 'required|string',
-            'city'        => 'required|string',
-            'postal_code' => 'required|string',
-            'country'     => 'required|string',
-            'state'       => 'nullable|string',
-        ]);
+   public function storeAddress(Request $request)
+{
+    $validator = validator($request->all(), [
+        'street'      => 'required|string',
+        'city'        => 'required|string',
+        'postal_code' => 'required|digits_between:4,5',
+        'country'     => 'required|string',
+        'state'       => 'nullable|string',
+    ], [
+        'street.required'      => 'La calle es obligatoria',
+        'city.required'        => 'La ciudad es obligatoria',
+        'postal_code.required'       => 'El código postal es obligatorio',
+        'postal_code.digits_between' => 'El código postal debe tener 4 o 5 dígitos',
+        'country.required'     => 'El país es obligatorio',
+    ]);
 
-        if ($request->is_default) {
-            Address::where('user_id', Auth::id())->update(['is_default' => false]);
-        }
-
-        Address::create([
-            'user_id'     => Auth::id(),
-            'street'      => $request->street,
-            'city'        => $request->city,
-            'state'       => $request->state,
-            'postal_code' => $request->postal_code,
-            'country'     => $request->country,
-            'is_default'  => $request->boolean('is_default'),
-        ]);
-
-        return back()->with('mensaje', 'Dirección añadida correctamente');
+    if ($validator->fails()) {
+        return back()
+            ->withErrors($validator)
+            ->withInput()
+            ->with('active_tab', 'direcciones');
     }
+
+    if ($request->is_default) {
+        Address::where('user_id', Auth::id())->update(['is_default' => false]);
+    }
+
+    Address::create([
+        'user_id'     => Auth::id(),
+        'street'      => $request->street,
+        'city'        => $request->city,
+        'state'       => $request->state,
+        'postal_code' => $request->postal_code,
+        'country'     => $request->country,
+        'is_default'  => $request->boolean('is_default'),
+    ]);
+
+    return back()
+        ->with('mensaje', 'Dirección añadida correctamente')
+        ->with('active_tab', 'direcciones');
+}
 
     public function destroyAddress($id)
     {
         $address = Address::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         $address->delete();
-        return back()->with('mensaje', 'Dirección eliminada correctamente');
+        return back()
+            ->with('mensaje', 'Dirección eliminada correctamente')
+            ->with('active_tab', 'direcciones');
     }
 
     // Métodos de pago simulados
